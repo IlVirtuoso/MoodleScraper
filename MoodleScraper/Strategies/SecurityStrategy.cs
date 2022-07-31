@@ -49,4 +49,17 @@ namespace MoodleScraper.Strategies
 
         }
     }
+
+    public class RetiStrategy : ScrapeStrategy
+    {
+        public RetiStrategy(string link) : base(link)
+        {
+        }
+
+        public override void Execute()
+        {
+            var links = DefaultStrategy((name) => name.StartsWith("registrazione"));
+            foreach (var link in links) OpenWebexLink(link.Value, link.Key, "reti2");
+        }
+    }
 }

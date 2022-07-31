@@ -31,20 +31,10 @@ namespace MoodleScraper.Strategies
 
             foreach(var link in links)
             {
-                OpenLink(link.Value, link.Key);
+                OpenWebexLink(link.Value, link.Key,"VerificaProgrammiConcorrenti");
             }
         }
 
-        private void OpenLink(string link, string videoName)
-        {
-            Driver.Navigate().GoToUrl(link);
-
-            var urlworkaround = Driver.FindElements(By.ClassName("urlworkaround")).FirstOrDefault();
-            if (urlworkaround != null)
-            {
-                var videoLink = urlworkaround.FindElement(By.TagName("a")).GetAttribute("href");
-                new WebexDownloadStrategy(videoLink, $"verificaprogrammiconcorrenti\\{videoName}.mp4");
-            }
-        }
+        
     }
 }

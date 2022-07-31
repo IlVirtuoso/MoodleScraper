@@ -27,6 +27,12 @@ namespace MoodleScraper
             //new SIMMODStrategy("https://informatica.i-learn.unito.it/course/view.php?id=2240");
             //new SecurityStrategy("https://informatica.i-learn.unito.it/course/view.php?id=2292");
             //new VCPStrategy("https://informatica.i-learn.unito.it/course/view.php?id=2416");
+            //new RetiStrategy("https://informatica.i-learn.unito.it/course/view.php?id=2308"); 
+            //new ATSDStrategy("https://informatica.i-learn.unito.it/course/view.php?id=2284");
+            //new ElivaStrategy("https://informatica.i-learn.unito.it/course/view.php?id=2360");
+            //new MTNStrategy("https://informatica.i-learn.unito.it/course/view.php?id=2250");
+            //new ModelGraphicStrategy("https://informatica.i-learn.unito.it/course/view.php?id=2206");
+            //new SDRVStrategy("https://informatica.i-learn.unito.it/course/view.php?id=2294");
 
 
             Downloader.Instance.WaitDownloads();

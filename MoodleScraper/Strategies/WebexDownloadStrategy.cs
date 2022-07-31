@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace MoodleScraper.Strategies
 {
-    public class WebexDownloadStrategy : StrategyBase
+    public class WebexDownloadStrategy : ScrapeStrategy
     {
         private string? _result;
         private string _path;
-        private string _url;
+
         public string Result
         {
             get
@@ -21,9 +21,8 @@ namespace MoodleScraper.Strategies
                 return _result ?? throw new ApplicationException("Link not found in page");
             }
         }
-        public WebexDownloadStrategy(string url, string filePath) : base()
+        public WebexDownloadStrategy(string url, string filePath) : base(url)
         {
-            _url = url;
             _path = filePath;
         }
 
@@ -55,7 +54,6 @@ namespace MoodleScraper.Strategies
             };
 
             Driver.Manage().Network.NetworkRequestSent += OnResponse;
-            Driver.Navigate().GoToUrl(_url);
             while (Driver.FindElements(By.ClassName("vjs-big-play-button")).Count == 0) { Thread.Sleep(1); }
             var playButton = Driver.FindElement(By.ClassName("vjs-big-play-button"));
             playButton.Click();
