@@ -4,23 +4,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Titanium.Web.Proxy;
+
 
 namespace MoodleScraper
 {
     public class DriverPool
     {
         public static DriverPool? _instance;
+        private static object _lock = new object();
         public static DriverPool Instance
         {
             get
             {
-                if (_instance == null)
+                lock (_lock)
                 {
-                    _instance = new DriverPool();
-                    _instance.SetMaxPool(1);
+                    if (_instance == null)
+                    {
+                        _instance = new DriverPool();
+                        _instance.SetMaxPool(1);
+                    }
+                    return _instance;
                 }
-                return _instance;
             }
         }
 
@@ -36,27 +40,19 @@ namespace MoodleScraper
 
         private Mutex _access = new Mutex();
 
-        private List<ProxyServer> _proxies = new List<ProxyServer>();
 
         public void SetMaxPool(int pools)
         {
             _pools.ForEach((d) => d.Dispose());
             _pools.Clear();
             _states.Clear();
-            _proxies.ForEach((p) => p.Dispose());
-            _proxies.Clear();
             for(int i = 0; i < pools; i++)
             {
-                _proxies.Add(_manager.CreateProxy(4443 + i));
-                _pools.Add(_manager.CreateDriver(proxyPort:4443+i,headless:HeadlessDrivers));
+                _pools.Add(_manager.CreateDriver(HeadlessDrivers));
                 _states.Add(true);
             }
         }
 
-        public ProxyServer GetProxy(IWebDriver driver)
-        {
-            return _proxies[_pools.IndexOf(driver)];
-        }
 
         private void WaitFreeDriver()
         {

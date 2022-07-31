@@ -23,10 +23,10 @@ namespace MoodleScraper.Strategies
             
             foreach(var content in contents)
             {
-                string? section = content.FindElement(By.ClassName("sectionname"))?.Text;
+                var section = content.FindElements(By.ClassName("sectionname")).FirstOrDefault();
                 if(section != null)
                 {
-                    DownloadWeek(section, content);
+                    DownloadWeek(section.Text, content);
                 }
 
             }
@@ -38,7 +38,7 @@ namespace MoodleScraper.Strategies
             var contents = section.FindElements(By.ClassName("contentwithoutlink"));
             string lectureName = "";
             string lectureLink = "";
-
+            Console.WriteLine(weekName);
             foreach(var content in contents)
             {
                 IWebElement? strong = content.FindElements(By.TagName("strong")).FirstOrDefault();

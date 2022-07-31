@@ -2,10 +2,7 @@
 using OpenQA.Selenium;
 using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.DevTools;
-using Titanium;
-using Titanium.Web.Proxy;
-using Titanium.Web.Proxy.Models;
-using Titanium.Web.Proxy.EventArguments;
+
 using System.Security.Cryptography.X509Certificates;
 using MoodleScraper.Strategies;
 using System.Diagnostics;
@@ -21,8 +18,17 @@ namespace MoodleScraper
             Console.WriteLine("Hello, World!");
             var anchor = StrategyBooker.Instance.Start();
             Downloader.Instance.Start();
-            new LoginStrategy().Wait();
-            new AvrcpStrategy("https://informatica.i-learn.unito.it/course/view.php?id=2354");
+
+
+
+            new LoginStrategy();
+            //new AvrcpStrategy("https://informatica.i-learn.unito.it/course/view.php?id=2354");
+            //new SCPDStrategy("https://informatica.i-learn.unito.it/course/view.php?id=2390");
+            //new SIMMODStrategy("https://informatica.i-learn.unito.it/course/view.php?id=2240");
+            //new SecurityStrategy("https://informatica.i-learn.unito.it/course/view.php?id=2292");
+            //new VCPStrategy("https://informatica.i-learn.unito.it/course/view.php?id=2416");
+
+
             Downloader.Instance.WaitDownloads();
             anchor.Join();
         }

@@ -4,14 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Titanium.Web.Proxy;
 
 namespace MoodleScraper.Adapters
 {
     public abstract class StrategyBase : IStrategy
     {
         protected IWebDriver Driver { get; private set; }
-        protected ProxyServer Proxy { get; private set; }
         private ManualResetEvent _waitEvent = new ManualResetEvent(false);
 
 #pragma warning disable CS8618
@@ -25,16 +23,13 @@ namespace MoodleScraper.Adapters
         public virtual void Prepare()
         {
             Driver = DriverPool.Instance.TryGetWebDriver();
-            Proxy = DriverPool.Instance.GetProxy(Driver);
         }
 
-        public void Run()
+        public virtual void Run()
         {
-            Proxy.Start();
             Execute();
             _waitEvent.Set();
             Driver.Navigate().GoToUrl("about:home");
-            Proxy.Stop();
         }
 
         public void Wait()
