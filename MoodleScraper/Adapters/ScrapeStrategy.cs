@@ -25,12 +25,14 @@ namespace MoodleScraper.Adapters
         protected void OpenWebexLink(string link, string videoName,string folderName)
         {
             Driver.Navigate().GoToUrl(link);
-
-            var urlworkaround = Driver.FindElements(By.ClassName("urlworkaround")).FirstOrDefault();
-            if (urlworkaround != null)
+            var links = Driver.FindElements(By.TagName("a"));
+            foreach(var localLink in links)
             {
-                var videoLink = urlworkaround.FindElement(By.TagName("a")).GetAttribute("href");
-                new WebexDownloadStrategy(videoLink, $"{folderName}\\{videoName}.mp4");
+                if (localLink.GetAttribute("href").Contains("unito.webex"))
+                {
+                    new WebexDownloadStrategy(localLink.GetAttribute("href"),$"{folderName}\\{videoName}.mp4");
+                    return;
+                }
             }
         }
 
