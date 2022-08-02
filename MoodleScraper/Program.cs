@@ -33,6 +33,8 @@ namespace MoodleScraper
             //new MTNStrategy("https://informatica.i-learn.unito.it/course/view.php?id=2250");
             //new ModelGraphicStrategy("https://informatica.i-learn.unito.it/course/view.php?id=2206");
             //new SDRVStrategy("https://informatica.i-learn.unito.it/course/view.php?id=2294");
+            //new AAUTStrategy("https://informatica.i-learn.unito.it/course/view.php?id=2328");
+            //new BDMStrategy("https://informatica.i-learn.unito.it/course/view.php?id=2410");
 
 
             Downloader.Instance.WaitDownloads();
