@@ -36,11 +36,11 @@ namespace MoodleScraper
             CreatePath(request.Path);
             var conv = FFmpeg.Conversions.New().AddParameter($" -hwaccel cuda -i {request.Link} -c copy").SetOutput(request.Path);
             ChildProgressBar? _child = null;
-            if(_bar == null)
+            if (_bar == null)
             {
                 _bar = new ProgressBar(100, "", ConsoleColor.Green);
             }
-            else if(_activeThreads > 1)
+            else if (_activeThreads > 1)
             {
                 _child = _bar.Spawn(100, "");
             }
@@ -60,49 +60,73 @@ namespace MoodleScraper
 
             };
 
-            conv.Start().ContinueWith((result)=>
+            conv.Start().ContinueWith((result) =>
             {
                 try
                 {
                     result.Wait();
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     _bar.WriteErrorLine($"An error occured during a download, message:{ex.Message}");
                 }
                 _activeThreads--;
                 if (_child != null) _child.Dispose();
                 _maxThreads.Release();
-            });;
+            }); ;
         }
 
         private void CreatePath(string filePath)
         {
-            Directory.CreateDirectory(filePath.Substring(0,filePath.LastIndexOf("\\")));
-            
+            Directory.CreateDirectory(filePath.Substring(0, filePath.LastIndexOf("\\")));
+
         }
 
-        
-        public Thread Start()
+
+        public Thread Start(bool dryrun = false)
         {
+            Thread t;
             _routineControl = true;
-            var t= new Thread(() =>
+            if (dryrun)
             {
-                while (_routineControl)
+                t = new Thread(() =>
                 {
-                    _downloadFinished.Reset();
-                    while (_requests.Count > 0)
+                    while (_routineControl)
                     {
-                        var request = _requests.Dequeue();
-                        CreateDownload(request);
+                        _downloadFinished.Reset();
+                        while (_requests.Count > 0)
+                        {
+                            var request = _requests.Dequeue();
+                            CreateDownload(request);
+                        }
+                        _downloadFinished.Set();
+                        Thread.Sleep(1);
                     }
-                    _downloadFinished.Set();
-                    Thread.Sleep(1);
-                }
-            });
+                });
+            }
+            else
+            {
+                t = new Thread(() =>
+                {
+                    var runner = new DryRunMode();
+                    while (_routineControl)
+                    {
+                        _downloadFinished.Reset();
+                        while (_requests.Count > 0)
+                        {
+                            var request = _requests.Dequeue();
+                            runner.CreateDownload(request);
+                        }
+                        _downloadFinished.Set();
+                        Thread.Sleep(1);
+                    }
+                });
+            }
             t.Start();
             return t;
         }
+
+        
 
         public void SetMaxThreads(int threads)
         {
@@ -118,7 +142,7 @@ namespace MoodleScraper
     public struct DownloadCommit
     {
         internal string Link { get; private set; }
-        internal string Path { get;private set; }
+        internal string Path { get; private set; }
         private ManualResetEvent _handle = new ManualResetEvent(false);
         public bool Result { get; private set; } = false;
         public DownloadCommit(string link, string path)
@@ -135,7 +159,18 @@ namespace MoodleScraper
 
         public void Wait()
         {
-            _handle.WaitOne();  
+            _handle.WaitOne();
+        }
+    }
+
+    internal class DryRunMode
+    {
+
+
+
+        internal void CreateDownload(DownloadCommit commit)
+        {
+            
         }
     }
 }
