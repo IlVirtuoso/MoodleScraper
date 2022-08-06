@@ -18,6 +18,7 @@ namespace MoodleScraper
             }
         }
 
+        public static bool DryRun { get; set; } = false;
         private ManualResetEvent _downloadFinished = new ManualResetEvent(false);
         private Queue<DownloadCommit> _requests = new Queue<DownloadCommit>();
         private bool _routineControl = false;
@@ -83,11 +84,11 @@ namespace MoodleScraper
         }
 
 
-        public Thread Start(bool dryrun = false)
+        public Thread Start()
         {
             Thread t;
             _routineControl = true;
-            if (dryrun)
+            if (!DryRun)
             {
                 t = new Thread(() =>
                 {
@@ -165,12 +166,34 @@ namespace MoodleScraper
 
     internal class DryRunMode
     {
-
-
-
+        private List<DownloadCommit> _commits = new List<DownloadCommit>();
         internal void CreateDownload(DownloadCommit commit)
         {
-            
+            _commits.Add(commit);
+            Directory.CreateDirectory(commit.Path.Substring(0,commit.Path.LastIndexOf("\\")));
+            File.Create(commit.Path);
+        }
+
+        internal void ShowInformation()
+        {
+            Dictionary<string, List<string>> fileCounts = new Dictionary<string, List<string>>();
+            foreach(var commit in _commits)
+            {
+                var folder = commit.Path.Substring(0, commit.Path.LastIndexOf('\\'));
+                if (fileCounts.ContainsKey(folder))
+                    fileCounts[folder].Add(commit.Path);
+                else
+                    fileCounts[folder] = new List<string>(new string[] { commit.Link });
+            }
+
+            Console.WriteLine($"Total File Counts: {_commits.Count}");
+            Console.WriteLine($"Total Estimated Space: {_commits.Count * 115}MB");
+            Console.WriteLine("########### Per Folder Files");
+            foreach(var key in fileCounts.Keys)
+            {
+                Console.WriteLine($"{key}: Files= {fileCounts[key].Count} ");
+            }
+
         }
     }
 }
