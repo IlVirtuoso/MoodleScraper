@@ -38,7 +38,7 @@ namespace MoodleScraper
 
         private event EventHandler? OnPoolRelease;
 
-        private Mutex _access = new Mutex();
+        private Semaphore _access = new Semaphore(1, 1);
 
 
         public void SetMaxPool(int pools)
@@ -71,7 +71,7 @@ namespace MoodleScraper
             int index = _pools.IndexOf(driver);
             _states[index] = true;
             OnPoolRelease?.Invoke(this, new EventArgs());
-            _access.ReleaseMutex();
+            _access.Release();
         }
 
         public IWebDriver TryGetWebDriver()
@@ -80,7 +80,7 @@ namespace MoodleScraper
 
             while(!_states.Any((s) => s))
             {
-                _access.ReleaseMutex();
+                _access.Release();
                 WaitFreeDriver();
                 _access.WaitOne();
             }
@@ -92,7 +92,7 @@ namespace MoodleScraper
             }
             var driver = _pools[index];
             _states[index] = false;
-            _access.ReleaseMutex();
+            _access.Release();
             return driver;
         }
 

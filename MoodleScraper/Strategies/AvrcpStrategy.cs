@@ -30,6 +30,7 @@ namespace MoodleScraper.Strategies
                 }
 
             }
+            return;
 
         }
 
@@ -38,16 +39,16 @@ namespace MoodleScraper.Strategies
             var contents = section.FindElements(By.ClassName("contentwithoutlink"));
             string lectureName = "";
             string lectureLink = "";
-            Console.WriteLine(weekName);
             foreach(var content in contents)
             {
                 IWebElement? strong = content.FindElements(By.TagName("strong")).FirstOrDefault();
                 IWebElement? href = content.FindElements(By.TagName("a")).FirstOrDefault();
 
                 if (strong != null) lectureName = strong.Text;
-                if(href != null)
+                if(href != null && href.GetAttribute("href") != null)
                 {
-                    lectureLink = href.GetAttribute("src");
+                    lectureLink = href.GetAttribute("href");
+                    new WebexDownloadStrategy(lectureLink, $"avrcp\\{lectureName}.mp4");
                     Console.WriteLine($"{lectureName} : {lectureLink}");
                 }
             }

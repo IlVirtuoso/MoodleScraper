@@ -17,12 +17,12 @@ namespace MoodleScraper
             Directory.SetCurrentDirectory(@"F:\MoodleSnapshot\");
             Console.WriteLine("Hello, World!");
             var anchor = StrategyBooker.Instance.Start();
+            Downloader.DryRun = true; //remove
             Downloader.Instance.Start();
 
 
-
             new LoginStrategy();
-            //new AvrcpStrategy("https://informatica.i-learn.unito.it/course/view.php?id=2354");
+            new AvrcpStrategy("https://informatica.i-learn.unito.it/course/view.php?id=2354");
             //new SCPDStrategy("https://informatica.i-learn.unito.it/course/view.php?id=2390");
             //new SIMMODStrategy("https://informatica.i-learn.unito.it/course/view.php?id=2240");
             //new SecurityStrategy("https://informatica.i-learn.unito.it/course/view.php?id=2292");

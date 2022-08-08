@@ -30,6 +30,7 @@ namespace MoodleScraper.Adapters
             Execute();
             _waitEvent.Set();
             Driver.Navigate().GoToUrl("about:home");
+            DriverPool.Instance.ReleaseDriver(Driver);
         }
 
         public void Wait()

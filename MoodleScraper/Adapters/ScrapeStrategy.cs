@@ -42,8 +42,8 @@ namespace MoodleScraper.Adapters
             List<KeyValuePair<string, string>> videos = new List<KeyValuePair<string, string>>();
             foreach (var instance in instances)
             {
-                var videoName = instance.FindElement(By.ClassName("instancename"));
-                if (PredicateText(videoName.Text))
+                var videoName = instance.FindElements(By.ClassName("instancename")).FirstOrDefault();
+                if (videoName != null&& PredicateText(videoName.Text))
                 {
                     var link = instance.FindElement(By.ClassName("aalink")).GetAttribute("href");
                     videos.Add(new KeyValuePair<string, string>(videoName.Text, link));

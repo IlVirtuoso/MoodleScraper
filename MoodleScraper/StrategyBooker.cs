@@ -43,16 +43,19 @@ namespace MoodleScraper
                     {
                         if(_strategies.Count > 0)
                         {
-                            IStrategy strategy = null;
+                            IStrategy? strategy = null;
                             if(_strategies.TryDequeue(out strategy))
                             {
-                                new Thread(() =>
+                                Task.Run(() =>
                                 {
-                                    strategy.Prepare();
-                                    strategy.Run();
-                                    _maxActiveThreads.Release(1);
-                                    strategy.Dispose();
-                                }).Start();
+                                    if (strategy != null)
+                                    {
+                                        strategy.Prepare();
+                                        strategy.Run();
+                                        _maxActiveThreads.Release(1);
+                                        strategy.Dispose();
+                                    }
+                                });
                             }
                         }
                         Thread.Sleep(1);
