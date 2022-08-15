@@ -44,10 +44,15 @@ namespace MoodleScraper.Strategies
                 IWebElement? strong = content.FindElements(By.TagName("strong")).FirstOrDefault();
                 IWebElement? href = content.FindElements(By.TagName("a")).FirstOrDefault();
 
-                if (strong != null) lectureName = strong.Text;
+                if (strong != null)
+                {
+                    lectureName = strong.Text;
+                }
+
                 if(href != null && href.GetAttribute("href") != null)
                 {
                     lectureLink = href.GetAttribute("href");
+                    if (lectureLink.Contains("meet")) { break; }
                     new WebexDownloadStrategy(lectureLink, $"avrcp\\{lectureName}.mp4");
                     Console.WriteLine($"{lectureName} : {lectureLink}");
                 }

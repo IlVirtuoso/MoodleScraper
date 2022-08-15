@@ -11,6 +11,7 @@ namespace MoodleScraper.Adapters
     {
         protected IWebDriver Driver { get; private set; }
         private ManualResetEvent _waitEvent = new ManualResetEvent(false);
+        private bool _execute = true;
 
 #pragma warning disable CS8618
         public StrategyBase()
@@ -27,7 +28,11 @@ namespace MoodleScraper.Adapters
 
         public virtual void Run()
         {
-            Execute();
+            while (_execute)
+            {
+                _execute = false;
+                Execute();
+            }
             _waitEvent.Set();
             Driver.Navigate().GoToUrl("about:home");
             DriverPool.Instance.ReleaseDriver(Driver);
@@ -38,12 +43,16 @@ namespace MoodleScraper.Adapters
             _waitEvent.WaitOne();
         }
 
+        protected void RequestRetry()
+        {
+            _execute = true;
+        }
+
         public abstract void Execute();
 
-        public void Dispose()
+        public virtual void Dispose()
         {
-            if(Driver != null)
-                DriverPool.Instance.ReleaseDriver(Driver);
+            
         }
     }
 }

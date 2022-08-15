@@ -22,9 +22,9 @@ namespace MoodleScraper
 
 
             new LoginStrategy();
-            new AvrcpStrategy("https://informatica.i-learn.unito.it/course/view.php?id=2354");
+            //new AvrcpStrategy("https://informatica.i-learn.unito.it/course/view.php?id=2354");
             //new SCPDStrategy("https://informatica.i-learn.unito.it/course/view.php?id=2390");
-            //new SIMMODStrategy("https://informatica.i-learn.unito.it/course/view.php?id=2240");
+            new SIMMODStrategy("https://informatica.i-learn.unito.it/course/view.php?id=2240");
             //new SecurityStrategy("https://informatica.i-learn.unito.it/course/view.php?id=2292");
             //new VCPStrategy("https://informatica.i-learn.unito.it/course/view.php?id=2416");
             //new RetiStrategy("https://informatica.i-learn.unito.it/course/view.php?id=2308"); 
@@ -36,6 +36,9 @@ namespace MoodleScraper
             //new AAUTStrategy("https://informatica.i-learn.unito.it/course/view.php?id=2328");
             //new BDMStrategy("https://informatica.i-learn.unito.it/course/view.php?id=2410");
             //new BioInfStrategy("https://informatica.i-learn.unito.it/course/view.php?id=2336");
+
+
+
 
 
             Downloader.Instance.WaitDownloads();

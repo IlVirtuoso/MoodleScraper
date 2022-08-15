@@ -16,16 +16,9 @@ namespace MoodleScraper.Strategies
 
         public override void Execute()
         {
-            var instances = Driver.FindElements(By.ClassName("activityinstance"));
-            foreach(var instance in instances)
-            {
-                var videoName = instance.FindElement(By.ClassName("instancename"));
-                if(videoName.Text.StartsWith("Video") || videoName.Text.StartsWith("Lezione"))
-                {
-                    var link = instance.FindElement(By.ClassName("aalink")).GetAttribute("href");
-                    new VideoDownloadStrategy(link, $"simmod\\{videoName.Text}.mp4");
-                }
-            }
+
+            var links = DefaultStrategy((text) => text.Contains("Video") || text.Contains("Lezione"));
+            links.ForEach((link) => new VideoDownloadStrategy(link.Value, $"SimMod\\{link.Key}.mp4"));
         }
     }
 }

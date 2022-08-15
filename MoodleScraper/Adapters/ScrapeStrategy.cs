@@ -42,11 +42,18 @@ namespace MoodleScraper.Adapters
             List<KeyValuePair<string, string>> videos = new List<KeyValuePair<string, string>>();
             foreach (var instance in instances)
             {
-                var videoName = instance.FindElements(By.ClassName("instancename")).FirstOrDefault();
-                if (videoName != null&& PredicateText(videoName.Text))
+                var videoTag = instance.FindElements(By.ClassName("instancename")).FirstOrDefault();
+
+                if (videoTag != null&& PredicateText(videoTag.Text))
                 {
+                    string videoName = videoTag.Text;
+                    if(videoName.Contains("/") || videoName.Contains("\\"))
+                    {
+                        videoName = videoName.Replace("/", "-");
+                        videoName = videoName.Replace("\\", "-");
+                    }
                     var link = instance.FindElement(By.ClassName("aalink")).GetAttribute("href");
-                    videos.Add(new KeyValuePair<string, string>(videoName.Text, link));
+                    videos.Add(new KeyValuePair<string, string>(videoName, link));
                 }
             }
             return videos;

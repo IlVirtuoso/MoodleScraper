@@ -22,13 +22,12 @@ namespace MoodleScraper
 
         private ConcurrentQueue<IStrategy> _strategies = new ConcurrentQueue<IStrategy>();
 
-        private Semaphore _maxActiveThreads = new Semaphore(16, 16);
+        private Semaphore _threadsLocker = new Semaphore(16, 16);
 
         private bool _routineActive = false;
         private Thread? _routine;
         public void RegisterStrategy(IStrategy strategy)
         {
-            _maxActiveThreads.WaitOne();
             _strategies.Enqueue(strategy);
         }
 
@@ -50,9 +49,10 @@ namespace MoodleScraper
                                 {
                                     if (strategy != null)
                                     {
+                                        _threadsLocker.WaitOne();
                                         strategy.Prepare();
                                         strategy.Run();
-                                        _maxActiveThreads.Release(1);
+                                        _threadsLocker.Release(1);
                                         strategy.Dispose();
                                     }
                                 });
